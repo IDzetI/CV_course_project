@@ -8,11 +8,11 @@ import matplotlib.pyplot as plt
 
 calibration = lambda: None
 # read picked calibration data created using Calibration.py
-with open("AR_Remote/calibration_data", "rb") as calibration_data:
+with open("calibration_data", "rb") as calibration_data:
     calibration.retval, calibration.cameraMatrix, calibration.distCoeffs, calibration.rvecs, calibration.tvecs = pickle.load(
         calibration_data)
 
-img = cv2.imread('Photos/0_0_0.jpg')
+img = cv2.imread('Photos/500_0_0.jpg')
 plt.imshow(img)
 # plt.show()
 
@@ -22,18 +22,39 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 points, ids, _ = cv2.aruco.detectMarkers(gray, dictionary)
 
 n = 0
+markers = {}
 for i in range(len(points)):
-    plt.plot(np.array(points[i][0]).T[0],np.array(points[i][0]).T[1],'r')
-    if ids[i][0] == 31:
-        n = i
-plt.savefig('test.png')
+    plt.plot(np.array(points[i][0]).T[0],np.array(points[i][0]).T[1], label = str(ids[i][0]))
+    rot, trans, _ = cv2.aruco.estimatePoseSingleMarkers([points[i]], 0.6,
+                                                        calibration.cameraMatrix,
+                                                        calibration.distCoeffs)
+    markers[ids[i][0]] = (rot, trans)
+
+
+plt.legend()
+# plt.savefig('test.png', dpi=300)
 plt.show()
-print(np.array(points[n][0]).T[0])
 
-rot, trans, _ = cv2.aruco.estimatePoseSingleMarkers([points[n]], 0.06,
-                                                    calibration.cameraMatrix,
-                                                    calibration.distCoeffs)
+C = np.array([
+markers[11][1][0][0],
+markers[7][1][0][0],
+markers[5][1][0][0]
+])
 
-print(rot)
-print()
-print(trans)
+x = np.array([
+    [-1, -1,  1.5],
+    [-1, 1.5, 1.5],
+    [0,   0,   0]
+])
+
+A = (C**-1).dot(x)
+
+print(C)
+print(x)
+print(A)
+
+
+for m in markers:
+    rot, trans = markers[m]
+
+    print(m,rot, A.dot(trans[0][0].T).T)
