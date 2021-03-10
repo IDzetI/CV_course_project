@@ -1,10 +1,8 @@
-import numpy as np
-import cv2
-import cv2.aruco
-import datetime
-import math
+
 import pickle
+import cv2.aruco
 import matplotlib.pyplot as plt
+import numpy as np
 
 calibration = lambda: None
 # read picked calibration data created using Calibration.py
@@ -13,7 +11,7 @@ with open("calibration_data", "rb") as calibration_data:
         calibration_data)
 
 img = cv2.imread('Photos/0002.jpg')
-plt.imshow(img)
+# plt.imshow(img)
 # plt.show()
 
 dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_1000)

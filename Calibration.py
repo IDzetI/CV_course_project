@@ -4,7 +4,7 @@ import cv2
 import pickle
 
 dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_1000)
-board = cv2.aruco.CharucoBoard_create(5, 5, .025, .0125, dictionary)
+board = cv2.aruco.CharucoBoard_create(5, 5, .0202/.5, .0185, dictionary)
 img = board.draw((200 * 3, 200 * 3))
 
 cv2.imwrite('calibration_board.png', img)
