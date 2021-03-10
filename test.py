@@ -42,31 +42,44 @@ plt.show()
 #     [0,     0,        0]
 # ])
 
-C = np.array([
+
+# Ac = x
+X = np.array([
 markers[9][1][0][0],
 markers[23][1][0][0],
 markers[17][1][0][0]
 ])
 
-x = np.array([
+print(np.linalg.cond(X))
+
+P = np.array([
     # 9     23       17
     [1.17,  1.88,  0.66],
     [-1.57, 0.33,    0 ],
     [0,     0,       0 ]
 ])
 
-a1 = [1.17, -1.57, 0]
-a2 = [1.88, 0.33, 0]
-a3 = [0.66, 0, 0]
+def get_a(x,p):
+    [x1,x2,x3,x4,x5,x6,x7,x8,x9] = x
+    [p1,p4,p7] = p
+    a3 = (x1*(x8*(p1*x4-p4*x1)-p1*x7*x3+p7*(x1*x3-x2*x4))+p1*x7*x4*(x2-x3)) / (x1*(x8*(x3*x4-x6*x1)+(x9*x3*x1+x2*(x6*x7-x9*x4))))
+    a2 = (a3*x3*x4-p1*x4-a3*x6*x1+p4*x1)/(x3*x1-x2*x4)
+    a1 = (p1-a2*x2-a3*x3)/x1
+    return np.array([a1,a2,a3])
 
-p1 = markers[9][1][0][0]
-p2 = markers[23][1][0][0]
-p3 = markers[17][1][0][0]
+x = [X[0][0], X[0][1], X[0][2], X[1][0], X[1][1], X[1][2], X[2][0], X[2][1], X[2][2]]
+print(get_a(x, [P[0][0],P[1][0],P[2][0]]))
+A = np.array([
+get_a(x, [P[0][0],P[0][1],P[0][2]]),
+get_a(x, [P[1][0],P[1][1],P[1][2]]),
+get_a(x, [P[2][0],P[2][1],P[2][2]])
+])
+# marker map
+# A = P.dot(np.linalg.inv(X))
 
-A = np.linalg.inv(C).dot(x)
 
-print(C)
-print(x)
+print(X)
+print(P)
 print(A)
 
 
